@@ -17,4 +17,5 @@ module "security-group" {
 module "s3" {
   source      = "./s3"
   bucket-name = var.bucket-name
+  app = var.app
 }

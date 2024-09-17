@@ -2,10 +2,10 @@ variable "sg_name" {}
 variable "vpc_id" {}
 
 output "sg_id" {
-  value = aws_security_group.jenkins_sg.id
+  value = aws_security_group.mern_sg.id
 }
 
-resource "aws_security_group" "jenkins_sg" {
+resource "aws_security_group" "mern_sg" {
   name        = var.sg_name
   vpc_id      = var.vpc_id
   description = "To enable ports: 80(HTTP) and 443(HTTPS) "

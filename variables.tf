@@ -30,3 +30,8 @@ variable "bucket-name" {
   type        = string
   description = "S3 Bucket Name"
 }
+
+variable "app" {
+  type = string
+  description = "App Name"  
+}
