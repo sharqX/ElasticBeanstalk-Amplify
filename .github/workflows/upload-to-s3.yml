@@ -14,7 +14,7 @@ jobs:
       # with:
       #   args: --acl public-read
     env:
-     FILE: 'testFile.zip'
+     FILE: './test.zip'
      AWS_REGION: 'ap-south-1'
      S3_BUCKET: ${{ secrets.AWS_BUCKET }}
      S3_KEY: ${{ secrets.S3_KEY }}
