@@ -32,6 +32,6 @@ variable "bucket-name" {
 }
 
 variable "app" {
-  type = string
-  description = "App Name"  
+  type        = string
+  description = "App Name"
 }

@@ -17,5 +17,14 @@ module "security-group" {
 module "s3" {
   source      = "./s3"
   bucket-name = var.bucket-name
-  app = var.app
+  app         = var.app
 }
+
+# module "elastic-beanstalk" {
+#   source      = "./elastic-beanstalk"
+#   eb-app-name = "MERN Backend"
+#   bucket      = module.s3.s3-bucket-id
+#   object      = module.s3.s3-object-id
+#   vpc_id      = module.vpc.vpc_id
+#   subnets     = module.vpc.public_subnet_id
+# }
