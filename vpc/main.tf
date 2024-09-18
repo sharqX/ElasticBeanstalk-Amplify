@@ -26,7 +26,7 @@ resource "aws_subnet" "mern_public_subnet" {
   availability_zone = element(var.ap_availability_zone, count.index)
 
   tags = {
-    Name = "mern Public Subnet-$(count.index + 1)"
+    Name = "mern Public Subnet-${count.index + 1}"
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_subnet" "mern_private_subnet" {
   availability_zone = element(var.ap_availability_zone, count.index)
 
   tags = {
-    Name = "mern Private Subnet-$(count.index + 1)"
+    Name = "mern Private Subnet-${count.index + 1}"
   }
 }
 

@@ -20,11 +20,12 @@ module "s3" {
   app         = var.app
 }
 
-# module "elastic-beanstalk" {
-#   source      = "./elastic-beanstalk"
-#   eb-app-name = "MERN Backend"
-#   bucket      = module.s3.s3-bucket-id
-#   object      = module.s3.s3-object-id
-#   vpc_id      = module.vpc.vpc_id
-#   subnets     = module.vpc.public_subnet_id
-# }
+module "elastic-beanstalk" {
+  source      = "./elastic-beanstalk"
+  eb-app-name = "MERN Backend"
+  bucket      = module.s3.s3-bucket-id
+  object      = module.s3.s3-object-id
+  vpc_id      = module.vpc.mern_vpc_id
+  subnets     = tolist(module.vpc.public_subnet_id)[0]
+  security-group = module.security-group.sg_id
+}
