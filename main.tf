@@ -1,3 +1,10 @@
+module "iam" {
+  source           = "./iam"
+  iam_role         = var.iam_role
+  instance-profile = var.instance-profile
+  eb_service_role  = var.eb_service_role
+}
+
 module "vpc" {
   source               = "./vpc"
   vpc_cidr             = var.vpc_cidr
@@ -14,18 +21,26 @@ module "security-group" {
   vpc_id  = module.vpc.mern_vpc_id
 }
 
-module "s3" {
-  source      = "./s3"
-  bucket-name = var.bucket-name
-  app         = var.app
+module "elastic-beanstalk" {
+  source              = "./elastic-beanstalk"
+  eb-app-name         = "MERN Backend"
+  solution_stack_name = var.solution_stack_name
+  tier                = "WebServer"
+  ServiceRole         = module.iam.aws-elasticbeanstalk-service-role
+  eb_instance_profile = module.iam.aws-elasticbeanstalk-ec2-instance-profile
+  vpc_id              = module.vpc.mern_vpc_id
+  subnets             = tolist(module.vpc.public_subnet_id)[0]
+  security-group      = module.security-group.sg_id
 }
 
-module "elastic-beanstalk" {
-  source      = "./elastic-beanstalk"
-  eb-app-name = "MERN Backend"
-  bucket      = module.s3.s3-bucket-id
-  object      = module.s3.s3-object-id
-  vpc_id      = module.vpc.mern_vpc_id
-  subnets     = tolist(module.vpc.public_subnet_id)[0]
-  security-group = module.security-group.sg_id
+module "eb-load-balancer" {
+  source            = "./eb-load-balancer"
+  loadbalancer_name = tolist(module.elastic-beanstalk.eb_lb_name)[0]
+}
+
+module "hosted-zone_" {
+  source         = "./hosted-zone"
+  subdomain_name = "backend.infotex.digital"
+  lb_dns_name    = module.eb-load-balancer.eb_lb_dns_name
+  lb_zone_id     = module.eb-load-balancer.eb_lb_zone_id
 }

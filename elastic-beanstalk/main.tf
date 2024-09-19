@@ -1,41 +1,72 @@
 variable "eb-app-name" {}
-variable "bucket" {}
-variable "object" {}
+variable "solution_stack_name" {}
+variable "tier" {}
+variable "ServiceRole" {}
+variable "eb_instance_profile" {}
 variable "vpc_id" {}
 variable "subnets" {}
 variable "security-group" {}
 
-data "aws_iam_role" "eb_ec2_role" {
-  name = "aws-elasticbeanstalk-ec2-role"
-}
+# output "eb_loadbalancer_url" {
+#   value = aws_elastic_beanstalk_environment.mern-backend-env.endpoint_url
+# }
 
-resource "aws_iam_instance_profile" "eb_instance_profile" {
-  name = "aws-elasticbeanstalk-ec2-instance-profile"
-  role = data.aws_iam_role.eb_ec2_role.name
+# output "eb-env-name" {
+#   value = aws_elastic_beanstalk_environment.mern-backend-env.name
+# }
+
+output "eb_lb_name" {
+  value = aws_elastic_beanstalk_environment.mern-backend-env.load_balancers
+
 }
 
 resource "aws_elastic_beanstalk_application" "mern-backend" {
   name = var.eb-app-name
 }
 
-# resource "aws_elastic_beanstalk_application_version" "mern-backend-version" {
-#   name        = "mern-app-backend-version"
-#   application = var.eb-app-name
-#   bucket      = var.bucket
-#   key         = "backend.zip"
-# }
-
 resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   name                = "mern-backend-env"
   application         = aws_elastic_beanstalk_application.mern-backend.name
-  solution_stack_name = "64bit Amazon Linux 2023 v6.2.1 running Node.js 20"
+  solution_stack_name = var.solution_stack_name
+  tier                = var.tier
+
+  #LoadBalancer
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "EnvironmentType"
+    value     = "LoadBalanced"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "ServiceRole"
+    value     = var.ServiceRole
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = "classic"
+  }
+
+  #LaunchConfig
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "IamInstanceProfile"
+    value     = var.eb_instance_profile
+  }
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
-    name = "IamInstanceProfile"
-    value = aws_iam_instance_profile.eb_instance_profile.name
-  } 
+    name      = "InstanceType"
+    value     = "t3.micro"
+  }
 
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "SecurityGroups"
+    value     = var.security-group
+  }
+
+  #VPC
   setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
@@ -51,19 +82,26 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
-    value     =  "True"
+    value     = "True"
   }
 
+  #AutoScaling
   setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "SecurityGroups"
-    value     = var.security-group
+    namespace = "aws:autoscaling:asg"
+    name      = "MinSize"
+    value     = 1
+  }
+  setting {
+    namespace = "aws:autoscaling:asg"
+    name      = "MaxSize"
+    value     = 2
   }
 
-setting {
-    namespace = "aws:elasticbeanstalk:environment:process:default"
-    name      = "MatcherHTTPCode"
-    value     = "200"
+  #HealthCheck
+  setting {
+    namespace = "aws:elasticbeanstalk:healthreporting:system"
+    name      = "SystemType"
+    value     = "basic"
   }
 
 }

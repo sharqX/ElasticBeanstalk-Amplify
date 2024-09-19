@@ -1,3 +1,19 @@
+#IAM
+variable "iam_role" {
+  type        = string
+  description = "EC2 IAM Role"
+}
+
+variable "eb_service_role" {
+  type        = string
+  description = "ElasticBeanstalk Service Role"
+}
+
+variable "instance-profile" {
+  type        = string
+  description = "Instance Profile"
+}
+
 #VPC
 variable "vpc_cidr" {
   type        = string
@@ -26,12 +42,18 @@ variable "public_subnet_cidr" {
 
 #S3
 
-variable "bucket-name" {
-  type        = string
-  description = "S3 Bucket Name"
-}
+# variable "bucket-name" {
+#   type        = string
+#   description = "S3 Bucket Name"
+# }
 
-variable "app" {
+# variable "app" {
+#   type        = string
+#   description = "App Name"
+# }
+
+#ElasticBeanstalk
+variable "solution_stack_name" {
   type        = string
-  description = "App Name"
+  description = "Solution Stack Name"
 }
