@@ -3,6 +3,7 @@ variable "solution_stack_name" {}
 variable "tier" {}
 variable "ServiceRole" {}
 variable "eb_instance_profile" {}
+variable "InstanceType" {}
 variable "vpc_id" {}
 variable "subnets" {}
 variable "security-group" {}
@@ -57,7 +58,7 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "InstanceType"
-    value     = "t3.micro"
+    value     = var.InstanceType
   }
 
   setting {

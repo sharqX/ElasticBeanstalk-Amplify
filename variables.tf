@@ -57,3 +57,15 @@ variable "solution_stack_name" {
   type        = string
   description = "Solution Stack Name"
 }
+
+variable "InstanceType" {
+  type        = string
+  description = "Instace Type"
+}
+
+#ACM
+
+variable "domain_name" {
+  type        = string
+  description = "Domain Name for ACM"
+}

@@ -19,14 +19,14 @@ resource "aws_security_group" "mern_sg" {
   #   protocol    = "tcp"
   # }
 
-  # #https traffic
-  # ingress {
-  #   description = "To enable port 443"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  #   from_port   = 443
-  #   to_port     = 443
-  #   protocol    = "tcp"
-  # }
+  #https traffic
+  ingress {
+    description = "To enable port 443"
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+  }
 
   # #outbound traffic
   # egress {
