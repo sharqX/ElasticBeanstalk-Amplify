@@ -7,19 +7,22 @@ variable "InstanceType" {}
 variable "vpc_id" {}
 variable "subnets" {}
 variable "security-group" {}
+variable "ELBSubnets" {}
+variable "sharedlb" {}
+# variable "cert_arn" {}
 
-# output "eb_loadbalancer_url" {
-#   value = aws_elastic_beanstalk_environment.mern-backend-env.endpoint_url
-# }
-
-# output "eb-env-name" {
-#   value = aws_elastic_beanstalk_environment.mern-backend-env.name
-# }
+output "eb_loadbalancer_url" {
+  value = aws_elastic_beanstalk_environment.mern-backend-env.endpoint_url
+}
 
 output "eb_lb_name" {
   value = aws_elastic_beanstalk_environment.mern-backend-env.load_balancers
-
 }
+
+output "instance_id" {
+  value = aws_elastic_beanstalk_environment.mern-backend-env.instances
+}
+
 
 resource "aws_elastic_beanstalk_application" "mern-backend" {
   name = var.eb-app-name
@@ -45,8 +48,55 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "LoadBalancerType"
-    value     = "classic"
+    value     = "application"
   }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerIsShared"
+    value     = true
+  }
+
+  # setting {
+  #   namespace = "aws:elbv2:loadbalancer"
+  #   name      = "ManagedSecurityGroup"
+  #   value     = var.security-group
+  # }
+
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "SharedLoadBalancer"
+    value     = var.sharedlb
+  }
+
+  # setting {
+  #   namespace = "aws:elbv2:listener:listener_port:443"
+  #   name = "Protocol"
+  #   value = "HTTPS"
+  # }
+
+  # setting {
+  #   namespace = "aws:elbv2:listener:default"
+  #   name = "ListenerEnabled"
+  #   value = "true"
+  # }
+
+  # setting {
+  #   namespace = "aws:elbv2:listener:listener_port:80"
+  #   name = "ListenerEnabled"
+  #   value = true
+  # }
+
+  # setting {
+  #   namespace = "aws:elbv2:listener:listener_port:443"
+  #   name = "SSLCertificateArns"
+  #   value = var.cert_arn
+  # }
+  # setting {
+  #   namespace = "aws:elbv2:listener:listener_port:443"
+  #   name = "SSLPolicy"
+  #   value = "ELBSecurityPolicy-FS-1-2-Res-2019-08"
+  # }
 
   #LaunchConfig
   setting {
@@ -84,6 +134,12 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
     value     = "True"
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBSubnets"
+    value     = var.ELBSubnets
   }
 
   #AutoScaling

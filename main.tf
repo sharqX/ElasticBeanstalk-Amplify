@@ -30,20 +30,27 @@ module "elastic-beanstalk" {
   eb_instance_profile = module.iam.aws-elasticbeanstalk-ec2-instance-profile
   InstanceType        = var.InstanceType
   vpc_id              = module.vpc.mern_vpc_id
-  subnets             = tolist(module.vpc.public_subnet_id)[0]
+  subnets             = join(",", module.vpc.public_subnet_id)
   security-group      = module.security-group.sg_id
+  ELBSubnets          = join(",", module.vpc.public_subnet_id)
+  sharedlb            = module.lb.lb_arn
+  # cert_arn            = module.acm.mern_acm_arn
 }
 
-module "eb-load-balancer" {
-  source            = "./eb-load-balancer"
-  loadbalancer_name = tolist(module.elastic-beanstalk.eb_lb_name)[0]
+module "target-group" {
+  source                   = "./target-group"
+  lb_target_group_name     = "mern-tg"
+  lb_target_group_port     = 80
+  lb_target_group_protocol = "HTTP"
+  vpc_id                   = module.vpc.mern_vpc_id
+  ec2_intance_id           = tolist(module.elastic-beanstalk.instance_id)[0]
 }
 
 module "hosted-zone" {
   source         = "./hosted-zone"
   subdomain_name = "backend.infotex.digital"
-  lb_dns_name    = module.eb-load-balancer.eb_lb_dns_name
-  lb_zone_id     = module.eb-load-balancer.eb_lb_zone_id
+  lb_dns_name    = module.elastic-beanstalk.eb_loadbalancer_url
+  lb_zone_id     = module.lb.lb_zone_id
 }
 
 module "acm" {
@@ -52,6 +59,26 @@ module "acm" {
   hosted_zone_id = module.hosted-zone.hosted_zone_id
 }
 
-output "sg_id" {
+module "lb" {
+  source                     = "./lb"
+  lb_name                    = "mern-load-balancer"
+  is_internal                = false
+  lb_type                    = "application"
+  lb_sg                      = [module.security-group.sg_id]
+  lb_subnet                  = tolist(module.vpc.public_subnet_id)
+  target_group_arn           = module.target-group.lb_target_group_arn
+  ec2_intance_id             = tolist(module.elastic-beanstalk.instance_id)[0]
+  target_group_attach_port   = 80
+  lb_listener_port           = 80
+  lb_listener_protocol       = "HTTP"
+  lb_default_action_type     = "forward"
+  lb_https_listener_port     = 443
+  lb_https_listener_protocol = "HTTPS"
+  mern_acm_arn               = module.acm.mern_acm_arn
+}
+
+
+output "sg" {
   value = module.security-group.sg_id
+
 }

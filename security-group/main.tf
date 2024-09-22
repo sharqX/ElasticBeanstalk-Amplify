@@ -11,13 +11,13 @@ resource "aws_security_group" "mern_sg" {
   description = "For MERN App"
 
   #http traffic
-  # ingress {
-  #   description = "To enable port 80"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  #   from_port   = 80
-  #   to_port     = 80
-  #   protocol    = "tcp"
-  # }
+  ingress {
+    description = "To enable port 80"
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+  }
 
   #https traffic
   ingress {
@@ -28,14 +28,22 @@ resource "aws_security_group" "mern_sg" {
     protocol    = "tcp"
   }
 
-  # #outbound traffic
-  # egress {
-  #   description = "Allow outgoing traffic"
-  #   cidr_blocks = ["0.0.0.0/0"]
-  #   from_port   = 0
-  #   to_port     = 0
-  #   protocol    = "-1"
-  # }
+  ingress {
+    description = "To enable port 5555"
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 5555
+    to_port     = 5555
+    protocol    = "tcp"
+  }
+
+  #outbound traffic
+  egress {
+    description = "Allow outgoing traffic"
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+  }
 
   tags = {
     Name = "MERN Security Group"

@@ -5,6 +5,10 @@ output "mern_acm_arn" {
   value = aws_acm_certificate.mern_acm.arn
 }
 
+output "ssl_certificate_id" {
+  value = aws_acm_certificate.mern_acm.id
+}
+
 resource "aws_acm_certificate" "mern_acm" {
   domain_name       = var.domain_name
   validation_method = "DNS"
