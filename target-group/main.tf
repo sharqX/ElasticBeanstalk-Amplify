@@ -8,7 +8,6 @@ output "lb_target_group_arn" {
   value = aws_lb_target_group.mern_lb_target_group.arn
 }
 
-
 resource "aws_lb_target_group" "mern_lb_target_group" {
   name     = var.lb_target_group_name
   port     = var.lb_target_group_port
@@ -16,7 +15,7 @@ resource "aws_lb_target_group" "mern_lb_target_group" {
   vpc_id   = var.vpc_id
 
   health_check {
-    path                = "/"
+    path                = "/health"
     port                = 80
     healthy_threshold   = 6
     unhealthy_threshold = 2

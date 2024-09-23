@@ -61,6 +61,14 @@ variable "solution_stack_name" {
 variable "InstanceType" {
   type        = string
   description = "Instace Type"
+
+}
+
+#HostedZone
+
+variable "subdomain" {
+  type = string
+  description = "Domain Name for app"
 }
 
 #ACM

@@ -1,22 +1,24 @@
 variable "eb-app-name" {}
+variable "eb-env-name" {}
 variable "solution_stack_name" {}
 variable "tier" {}
+variable "eb-env-type" {}
 variable "ServiceRole" {}
+variable "eb-lb-type" {}
+variable "is_shared_lb" {}
+variable "sharedlb" {}
+variable "healthcheck_path" {}
 variable "eb_instance_profile" {}
 variable "InstanceType" {}
 variable "vpc_id" {}
 variable "subnets" {}
+variable "pub_ip" {}
 variable "security-group" {}
 variable "ELBSubnets" {}
-variable "sharedlb" {}
-# variable "cert_arn" {}
+variable "healthreporting" {}
 
-output "eb_loadbalancer_url" {
+output "eb_endpoint_url" {
   value = aws_elastic_beanstalk_environment.mern-backend-env.endpoint_url
-}
-
-output "eb_lb_name" {
-  value = aws_elastic_beanstalk_environment.mern-backend-env.load_balancers
 }
 
 output "instance_id" {
@@ -29,7 +31,7 @@ resource "aws_elastic_beanstalk_application" "mern-backend" {
 }
 
 resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
-  name                = "mern-backend-env"
+  name                = var.eb-env-name
   application         = aws_elastic_beanstalk_application.mern-backend.name
   solution_stack_name = var.solution_stack_name
   tier                = var.tier
@@ -38,7 +40,7 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "EnvironmentType"
-    value     = "LoadBalanced"
+    value     = var.eb-env-type
   }
   setting {
     namespace = "aws:elasticbeanstalk:environment"
@@ -48,20 +50,14 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "LoadBalancerType"
-    value     = "application"
+    value     = var.eb-lb-type
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "LoadBalancerIsShared"
-    value     = true
+    value     = var.is_shared_lb
   }
-
-  # setting {
-  #   namespace = "aws:elbv2:loadbalancer"
-  #   name      = "ManagedSecurityGroup"
-  #   value     = var.security-group
-  # }
 
   setting {
     namespace = "aws:elbv2:loadbalancer"
@@ -69,34 +65,17 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
     value     = var.sharedlb
   }
 
-  # setting {
-  #   namespace = "aws:elbv2:listener:listener_port:443"
-  #   name = "Protocol"
-  #   value = "HTTPS"
-  # }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "HealthCheckPath"
+    value     = var.healthcheck_path
+  }
 
-  # setting {
-  #   namespace = "aws:elbv2:listener:default"
-  #   name = "ListenerEnabled"
-  #   value = "true"
-  # }
-
-  # setting {
-  #   namespace = "aws:elbv2:listener:listener_port:80"
-  #   name = "ListenerEnabled"
-  #   value = true
-  # }
-
-  # setting {
-  #   namespace = "aws:elbv2:listener:listener_port:443"
-  #   name = "SSLCertificateArns"
-  #   value = var.cert_arn
-  # }
-  # setting {
-  #   namespace = "aws:elbv2:listener:listener_port:443"
-  #   name = "SSLPolicy"
-  #   value = "ELBSecurityPolicy-FS-1-2-Res-2019-08"
-  # }
+  setting {
+    namespace = "aws:elasticbeanstalk:environment:process:default"
+    name      = "MatcherHTTPCode"
+    value     = "200"
+  }
 
   #LaunchConfig
   setting {
@@ -133,7 +112,7 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   setting {
     namespace = "aws:ec2:vpc"
     name      = "AssociatePublicIpAddress"
-    value     = "True"
+    value     = var.pub_ip
   }
 
   setting {
@@ -158,7 +137,6 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   setting {
     namespace = "aws:elasticbeanstalk:healthreporting:system"
     name      = "SystemType"
-    value     = "basic"
+    value     = var.healthreporting
   }
-
 }

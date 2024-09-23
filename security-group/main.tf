@@ -28,14 +28,6 @@ resource "aws_security_group" "mern_sg" {
     protocol    = "tcp"
   }
 
-  ingress {
-    description = "To enable port 5555"
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 5555
-    to_port     = 5555
-    protocol    = "tcp"
-  }
-
   #outbound traffic
   egress {
     description = "Allow outgoing traffic"
