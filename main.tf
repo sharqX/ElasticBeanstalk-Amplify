@@ -23,8 +23,8 @@ module "security-group" {
 module "target-group" {
   source                   = "./target-group"
   lb_target_group_name     = "mern-tg"
-  lb_target_group_port     = 80
-  lb_target_group_protocol = "HTTP"
+  lb_target_group_port     = var.tg_port
+  lb_target_group_protocol = var.tg_protocol
   vpc_id                   = module.vpc.mern_vpc_id
   ec2_intance_id           = tolist(module.elastic-beanstalk.instance_id)[0]
 }
@@ -71,7 +71,7 @@ module "elastic-beanstalk" {
 
 module "hosted-zone" {
   source         = "./hosted-zone"
-  subdomain_name =  var.subdomain
+  subdomain_name = var.subdomain
   lb_dns_name    = module.elastic-beanstalk.eb_endpoint_url
   lb_zone_id     = module.lb.lb_zone_id
 }
@@ -81,4 +81,3 @@ module "acm" {
   domain_name    = var.domain_name
   hosted_zone_id = module.hosted-zone.hosted_zone_id
 }
-

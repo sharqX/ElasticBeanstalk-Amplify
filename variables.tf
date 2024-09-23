@@ -40,8 +40,20 @@ variable "public_subnet_cidr" {
   description = "Public CIDR Range"
 }
 
-#S3
+#TargetGroup
+variable "tg_port" {
+  type = number
+  default = 80
+  description = "Port for Target Group"
+}
 
+variable "tg_protocol" {
+  type = string
+  default = "HTTP"
+  description = "Protocol for Target Group"
+}
+
+#S3
 # variable "bucket-name" {
 #   type        = string
 #   description = "S3 Bucket Name"
@@ -65,14 +77,12 @@ variable "InstanceType" {
 }
 
 #HostedZone
-
 variable "subdomain" {
-  type = string
+  type        = string
   description = "Domain Name for app"
 }
 
 #ACM
-
 variable "domain_name" {
   type        = string
   description = "Domain Name for ACM"
