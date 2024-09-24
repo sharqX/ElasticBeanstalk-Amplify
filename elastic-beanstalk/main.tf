@@ -16,6 +16,7 @@ variable "pub_ip" {}
 variable "security-group" {}
 variable "ELBSubnets" {}
 variable "healthreporting" {}
+variable "mongourl" {}
 
 output "eb_endpoint_url" {
   value = aws_elastic_beanstalk_environment.mern-backend-env.endpoint_url
@@ -36,6 +37,12 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   solution_stack_name = var.solution_stack_name
   tier                = var.tier
 
+#EnvironmentVariable
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "MONGOURL"
+    value     = var.mongourl
+  }
   #LoadBalancer
   setting {
     namespace = "aws:elasticbeanstalk:environment"

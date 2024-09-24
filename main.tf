@@ -67,6 +67,7 @@ module "elastic-beanstalk" {
   security-group      = module.security-group.sg_id
   ELBSubnets          = join(",", module.vpc.public_subnet_id)
   healthreporting     = "basic"
+  mongourl = var.mongourl
 }
 
 module "hosted-zone" {

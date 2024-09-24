@@ -76,6 +76,11 @@ variable "InstanceType" {
 
 }
 
+variable "mongourl" {
+  type = string
+  description = "URL to connect to mongo atlas"
+}
+
 #HostedZone
 variable "subdomain" {
   type        = string
