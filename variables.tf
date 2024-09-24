@@ -92,3 +92,41 @@ variable "domain_name" {
   type        = string
   description = "Domain Name for ACM"
 }
+
+#Amplify
+variable "repo" {
+  type        = string
+  description = "Repo url for the app"
+}
+
+variable "frontend_domain_name" {
+  type        = string
+  description = "Domain Name for the frontend"
+}
+
+variable "domain_prefix" {
+  type        = string
+  description = "Prefix 1st for domain name"
+}
+
+variable "domain_prefix_2" {
+  type        = string
+  description = "Prefix 2nd for domain name"
+}
+
+variable "branch_name" {
+  type        = string
+  default     = "main"
+  description = "Repo Branch for Amplify"
+}
+
+variable "access_token" {
+  type = string
+  description = "github access token"
+}
+
+variable "env_var" {
+  type = map(string)
+  description = "Environment Variable for the frontend"
+
+}
