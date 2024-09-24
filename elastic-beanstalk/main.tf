@@ -37,7 +37,7 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   solution_stack_name = var.solution_stack_name
   tier                = var.tier
 
-#EnvironmentVariable
+  #EnvironmentVariable
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "MONGOURL"

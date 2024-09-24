@@ -42,14 +42,14 @@ variable "public_subnet_cidr" {
 
 #TargetGroup
 variable "tg_port" {
-  type = number
-  default = 80
+  type        = number
+  default     = 80
   description = "Port for Target Group"
 }
 
 variable "tg_protocol" {
-  type = string
-  default = "HTTP"
+  type        = string
+  default     = "HTTP"
   description = "Protocol for Target Group"
 }
 
@@ -77,7 +77,7 @@ variable "InstanceType" {
 }
 
 variable "mongourl" {
-  type = string
+  type        = string
   description = "URL to connect to mongo atlas"
 }
 
