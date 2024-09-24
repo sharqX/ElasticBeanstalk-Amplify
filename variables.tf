@@ -121,12 +121,12 @@ variable "branch_name" {
 }
 
 variable "access_token" {
-  type = string
+  type        = string
   description = "github access token"
 }
 
 variable "env_var" {
-  type = map(string)
+  type        = map(string)
   description = "Environment Variable for the frontend"
 
 }

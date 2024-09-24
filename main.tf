@@ -92,6 +92,6 @@ module "amplify" {
   domain_prefix        = var.domain_prefix
   domain_prefix_2      = var.domain_prefix_2
   branch_name          = var.branch_name
-  access_token = var.access_token
-  env_var = var.env_var
+  access_token         = var.access_token
+  env_var              = var.env_var
 }

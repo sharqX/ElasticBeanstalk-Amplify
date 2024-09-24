@@ -8,9 +8,9 @@ variable "access_token" {}
 variable "env_var" {}
 
 resource "aws_amplify_app" "bookStoreFrontend" {
-  name       = var.aws_amplify_app_name
-  repository = var.repository
-  access_token = var.access_token
+  name                  = var.aws_amplify_app_name
+  repository            = var.repository
+  access_token          = var.access_token
   environment_variables = var.env_var
 }
 
