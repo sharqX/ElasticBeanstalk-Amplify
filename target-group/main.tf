@@ -2,7 +2,7 @@ variable "lb_target_group_name" {}
 variable "lb_target_group_port" {}
 variable "lb_target_group_protocol" {}
 variable "vpc_id" {}
-variable "ec2_intance_id" {}
+variable "autoscaling_group" {}
 
 output "lb_target_group_arn" {
   value = aws_lb_target_group.mern_lb_target_group.arn
@@ -25,7 +25,7 @@ resource "aws_lb_target_group" "mern_lb_target_group" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "target_group_attach" {
-  target_group_arn = aws_lb_target_group.mern_lb_target_group.arn
-  target_id        = var.ec2_intance_id
+resource "aws_autoscaling_attachment" "mern_autoscaling_group" {
+  lb_target_group_arn    = aws_lb_target_group.mern_lb_target_group.arn
+  autoscaling_group_name = var.autoscaling_group
 }

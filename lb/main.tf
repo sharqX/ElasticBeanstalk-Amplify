@@ -2,10 +2,8 @@ variable "lb_name" {}
 variable "is_internal" {}
 variable "lb_type" {}
 variable "lb_sg" {}
-variable "lb_subnet" {}
 variable "target_group_arn" {}
-variable "ec2_intance_id" {}
-variable "target_group_attach_port" {}
+variable "lb_subnet" {}
 variable "lb_listener_port" {}
 variable "lb_listener_protocol" {}
 variable "lb_default_action_type" {}
@@ -37,12 +35,6 @@ resource "aws_lb" "mern_lb" {
   tags = {
     Name = "mern Load Balancer"
   }
-}
-
-resource "aws_lb_target_group_attachment" "mern_lb_attach" {
-  target_group_arn = var.target_group_arn
-  target_id        = var.ec2_intance_id
-  port             = var.target_group_attach_port
 }
 
 #for http

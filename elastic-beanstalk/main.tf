@@ -17,19 +17,25 @@ variable "security-group" {}
 variable "ELBSubnets" {}
 variable "healthreporting" {}
 variable "mongourl" {}
-
-output "eb_endpoint_url" {
-  value = aws_elastic_beanstalk_environment.mern-backend-env.endpoint_url
-}
+variable "certificate_arn" {}
 
 output "instance_id" {
   value = aws_elastic_beanstalk_environment.mern-backend-env.instances
 }
 
-
 resource "aws_elastic_beanstalk_application" "mern-backend" {
   name = var.eb-app-name
 }
+
+output "autoscaling_group" {
+  value = aws_elastic_beanstalk_environment.mern-backend-env.autoscaling_groups
+}
+
+output "zone_id" {
+  value = data.aws_elastic_beanstalk_hosted_zone.zone
+}
+
+data "aws_elastic_beanstalk_hosted_zone" "zone" {}
 
 resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
   name                = var.eb-env-name
@@ -134,10 +140,35 @@ resource "aws_elastic_beanstalk_environment" "mern-backend-env" {
     name      = "MinSize"
     value     = 1
   }
+
   setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
     value     = 2
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "MeasureName"
+    value     = "CPUUtilization"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "Unit"
+    value     = "Percent"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "UpperThreshold"
+    value     = 75
+  }
+
+  setting {
+    namespace = "aws:autoscaling:trigger"
+    name      = "LowerThreshold"
+    value     = 50
   }
 
   #HealthCheck

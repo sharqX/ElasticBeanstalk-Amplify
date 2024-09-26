@@ -26,7 +26,7 @@ module "target-group" {
   lb_target_group_port     = var.tg_port
   lb_target_group_protocol = var.tg_protocol
   vpc_id                   = module.vpc.mern_vpc_id
-  ec2_intance_id           = tolist(module.elastic-beanstalk.instance_id)[0]
+  autoscaling_group        = tolist(module.elastic-beanstalk.autoscaling_group)[0]
 }
 
 module "lb" {
@@ -37,8 +37,6 @@ module "lb" {
   lb_sg                      = [module.security-group.sg_id]
   lb_subnet                  = tolist(module.vpc.public_subnet_id)
   target_group_arn           = module.target-group.lb_target_group_arn
-  ec2_intance_id             = tolist(module.elastic-beanstalk.instance_id)[0]
-  target_group_attach_port   = 80
   lb_listener_port           = 80
   lb_listener_protocol       = "HTTP"
   lb_default_action_type     = "forward"
@@ -63,17 +61,18 @@ module "elastic-beanstalk" {
   InstanceType        = var.InstanceType
   vpc_id              = module.vpc.mern_vpc_id
   subnets             = join(",", module.vpc.public_subnet_id)
-  pub_ip              = "true"
+  pub_ip              = true
   security-group      = module.security-group.sg_id
   ELBSubnets          = join(",", module.vpc.public_subnet_id)
-  healthreporting     = "basic"
+  healthreporting     = "enhanced"
   mongourl            = var.mongourl
+  certificate_arn     = module.acm.mern_acm_arn
 }
 
 module "hosted-zone" {
   source         = "./hosted-zone"
   subdomain_name = var.subdomain
-  lb_dns_name    = module.elastic-beanstalk.eb_endpoint_url
+  lb_dns_name    = module.lb.lb_dns_name
   lb_zone_id     = module.lb.lb_zone_id
 }
 
