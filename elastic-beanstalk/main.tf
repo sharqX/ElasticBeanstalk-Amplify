@@ -19,20 +19,16 @@ variable "healthreporting" {}
 variable "mongourl" {}
 variable "certificate_arn" {}
 
-output "instance_id" {
-  value = aws_elastic_beanstalk_environment.mern-backend-env.instances
-}
-
-resource "aws_elastic_beanstalk_application" "mern-backend" {
-  name = var.eb-app-name
-}
-
 output "autoscaling_group" {
   value = aws_elastic_beanstalk_environment.mern-backend-env.autoscaling_groups
 }
 
 output "zone_id" {
   value = data.aws_elastic_beanstalk_hosted_zone.zone
+}
+
+resource "aws_elastic_beanstalk_application" "mern-backend" {
+  name = var.eb-app-name
 }
 
 data "aws_elastic_beanstalk_hosted_zone" "zone" {}

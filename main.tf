@@ -82,15 +82,15 @@ module "acm" {
   hosted_zone_id = module.hosted-zone.hosted_zone_id
 }
 
-module "amplify" {
-  source               = "./amplify"
-  depends_on           = [module.elastic-beanstalk, module.hosted-zone, module.target-group]
-  aws_amplify_app_name = "BookStore"
-  repository           = var.repo
-  frontend_domain_name = var.frontend_domain_name
-  domain_prefix        = var.domain_prefix
-  domain_prefix_2      = var.domain_prefix_2
-  branch_name          = var.branch_name
-  access_token         = var.access_token
-  env_var              = var.env_var
-}
+# module "amplify" {
+#   source               = "./amplify"
+#   depends_on           = [module.elastic-beanstalk, module.hosted-zone, module.target-group]
+#   aws_amplify_app_name = "BookStore"
+#   repository           = var.repo
+#   frontend_domain_name = var.frontend_domain_name
+#   domain_prefix        = var.domain_prefix
+#   domain_prefix_2      = var.domain_prefix_2
+#   branch_name          = var.branch_name
+#   access_token         = var.access_token
+#   env_var              = var.env_var
+# }
